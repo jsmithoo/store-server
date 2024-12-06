@@ -1,0 +1,40 @@
+version: '3.9'
+services:
+  tienda-online:
+    container_name: tienda-online-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: store-online
+    ports:
+      - "8080:8080"  # Exponer el puerto de la aplicación
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-server:3306/BD_TIENDA
+      SPRING_DATASOURCE_USERNAME: jsmitho
+      SPRING_DATASOURCE_PASSWORD: Juan12345678
+    networks:
+      - myred
+    depends_on:
+      - mysql-server
+
+  mysql-server:
+    image: mysql:8.4.0
+    container_name: mysql-server
+    environment:
+      MYSQL_ROOT_PASSWORD: Juan12345678
+      MYSQL_DATABASE: BD_TIENDA
+      MYSQL_USER: jsmitho
+      MYSQL_PASSWORD: Juan12345678
+    ports:
+      - "3307:3306"  # Puerto externo (3307) y el interno de MySQL (3306)
+    networks:
+      - myred
+    volumes:
+      - ./mysql:/var/lib/mysql
+#      - mysql-volume:/var/lib/mysql
+
+networks:
+  myred:  # Red compartida entre servicios
+
+volumes:
+  mysql-volume:
